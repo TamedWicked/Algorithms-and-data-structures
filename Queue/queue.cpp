@@ -48,12 +48,18 @@ template <class T>
 			}
 		}
 
-		void Pop()
+		const T Pop()
 		{
+
+			if(head==NULL){std::cout << "Queue is empty." << std::endl; return NULL;}
+
+			T value_holder;
 			Node<T> *temp = new Node<T>;
 			temp=head;
+			value_holder=temp->element;
 			head=head->next;
 			delete temp;
+			return value_holder;
 		}
 
 	};
@@ -61,7 +67,7 @@ template <class T>
 int main(){
 	Queue<int> brojevi;
 	brojevi.CreateNode(4);
-	brojevi.CreateNode(16);
+	//brojevi.CreateNode(16);
 	brojevi.ShowQueue();
 	brojevi.Pop();
 	std::cout << std::endl;
