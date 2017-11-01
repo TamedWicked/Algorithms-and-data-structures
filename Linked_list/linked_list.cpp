@@ -1,157 +1,126 @@
 #include <iostream>
 #include <string>
 
-template <class T>
-class List{
-private:
-	template <class T>
-	struct Node {
-		T element;
+template <class T> class List{
+	
+	private:
+		//One node of the list which contains one variable for data and a pointer to the next node
+		template <class T> struct Node{
+		T data;
 		Node<T> *next;
-		Node<T> *prev;
-		int place=1;
 	};
+		//This pointers will point to first and last node and num_of_nodes will keep track of how many there are
+		Node<T> *head, *tail;
+		int num_of_nodes=0;
 
-	Node<T> *head,*tail;
-
-public:
-	List()
-	{
-		head=NULL;
-		tail=NULL;
-	}
-	//Make a new list element as a tail
-	void CreateNode(T input_value)
-	{
-		Node<T> *temp = new Node<T>;
-		temp->element=input_value;
-		temp->next=NULL;
-		temp->prev=tail;
-		if(head==NULL)
+	public:
+		//Pointing to NULL because we will be adding data after making an object
+		List()
 		{
-			head=temp;
-			tail=temp;
-			temp=NULL;
+			head=NULL;
+			tail=NULL;
 		}
-		else
-		{
-			temp->place=(tail->place)+1;
-			tail->next=temp;
-			tail=temp;
-		}
-	}
-	//Create a node with a given place in the list.
-	void CreateNode(T input_value, int place_num)
-	{
-		Node<T> *previous=new Node<T>;
-	    Node<T> *current=new Node<T>;
-	    Node<T> *temp=new Node<T>;
-	    current=head;
-	    for(int i=1;i<place_num;i++)
-	    {
-	      previous=current;
-	      current=current->next;
-	    }
-	    current->prev=temp;
-	    temp->prev=previous;
-	    temp->place=previous->place+1;
-	    temp->element=input_value;
-	    previous->next=temp;	
-	    temp->next=current;
-		
-		for(int i=temp->place+1;i<tail->place+1;++i)
-		{
-			temp=temp->next;
-			temp->place++;
-		}
-		tail->place++;
-	}
-
-	//Show the whole list from head to tail
-	void ShowList()
-	{
-		Node<T> *temp = new Node<T>;
-		Node<T> *temp2 = new Node<T>;
-		temp=head;
-		temp2=temp->prev;
-		while(temp!=NULL)
-		{
-			std::cout << std::endl;
-			std::cout << "Data #" << temp->place <<": " << temp->element;
-			if(temp->prev!=NULL){std::cout <<"	Previous element: " << temp2->element;}
-			temp=temp->next;
-
-			if(temp!=NULL)temp2=temp->prev;
-		}
-		if(head==NULL){
-			std::cout << "The list is empty." << std::endl;
-		}
-	}
-	//Show specific Node given positive integer as an argument
-	void ShowNode(int number)
-	{
-
-		if(head==NULL || number>tail->place){std::cout << "Input number invalid or list is empty." << std::endl; return;}
-
-		if(number==tail->place){
-			std::cout << "Data #" << tail->place <<": " << tail->element;
-			return;}
-
-		if(number>0 && head!=NULL)
+		//This is essentially a push function, it will add a node to the end of the list 
+		void CreateNode(T input_value)
 		{
 			Node<T> *temp = new Node<T>;
-			temp=head;
-			while(temp!=NULL)
-			{
-				if(temp->place==number){
-					std::cout << "Data #" << temp->place <<": " << temp->element;
-					break;}
+			temp->data=input_value;
+			temp->next=NULL;
 
-				temp=temp->next;
+			if(head==NULL)
+			{
+				head=temp;
+				tail=temp;
+				temp=NULL;
+				num_of_nodes++;
+			}
+			else
+			{
+				tail->next=temp;
+				tail=temp;
+				temp=NULL;
+				num_of_nodes++;
 			}
 		}
-	}
-
-	void DeleteFirst()
-	{
-		
-	}
-
-	const T ListSize(){if(tail!=NULL)return tail->place; else return 0;}
-	const T GetData(int number)
-	{
-		Node<T> *temp = new Node<T>;
-		temp=head;
-		if(head==NULL || number>tail->place || number<1)
-			return NULL;
-		
-		if(number==tail->place)
-			return tail->element;
-
-		while(temp!=NULL)
+		//Overloaded CreateNode so the place in the list can also be chosen
+		void CreateNode(T input_value, int place)
 		{
-			if(temp->place==number)
-				return temp->element;
+			if(place==1 && head!=NULL) //adding at the start of the list if the list is NOT empty
+			{
+				Node<T> *temp = new Node<T>;
+				temp->data=input_value;
+				temp->next=head;
+				head=temp;
+				temp=NULL;
 
-			temp=temp->next;
+			}
+			else if(place>1 && place<=num_of_nodes+1) //place must be between 1 and number of nodes in the list
+			{
+				Node<T> *previous = new Node<T>;
+				Node<T> *current = new Node<T>;
+				Node<T> *temp = new Node<T>;
+				temp->data=input_value;
+				current=head;
+				for(int i=0; i<place-1; i++)
+				{
+					previous=current;
+					current=current->next;
+				}
+				temp->next=current;
+				previous->next=temp;
+				num_of_nodes++;
+				temp=NULL;
+			}
+			else 	//if all above fails... well, it failed. Invalid input.
+			{
+				std::cout << "Invalid input." << std::endl;
+				return;
+			}
+
 		}
-	}
+		//Prints the whole list as a column
+		void PrintList()
+		{
+			Node<T> *temp= new Node<T>;
+			temp=head;
+			if(head==NULL)
+			{
+				std::cout << "The list is empty." << std::endl;
+			}
+			else
+			{
+				int i=1;
+				while(temp!=NULL)
+				{
+					std::cout << "Data #" << i++ <<": " << temp->data << std::endl;
+					temp=temp->next;
+				}
+			}
+		}
+		//Returns size of the list 
+		const int size()
+		{
+			return num_of_nodes;
+		}
 };
 
+
+
 int main(){
-	List<int> lista;
-	lista.CreateNode(4);
-	lista.CreateNode(22);
-	lista.CreateNode(6);
-	lista.CreateNode(64);
-	lista.CreateNode(88);
-	lista.CreateNode(16);
-	lista.CreateNode(5,3);
-	lista.CreateNode(666,4);
-	lista.CreateNode(222,2);
-	lista.ShowList();
-	//lista.DeleteFirst();
-	std::cout << std::endl;
-	lista.ShowList();
+	List<int> integers;
+	integers.CreateNode(4);
+	integers.CreateNode(5);
+	integers.CreateNode(6,3);
+	integers.CreateNode(7,3);
+	integers.PrintList();
+	std::cout << "The list has " << integers.size() << " elements." << std::endl;
+
+	List<std::string> words;
+	words.CreateNode("Hello");
+	words.CreateNode("world");
+	words.CreateNode("I can even fit sentences in here.", 2);
+	words.PrintList();
+
+
 	return 0;
 }
