@@ -24,10 +24,6 @@ int main(){
 	std::vector<int> numbers5(num);
 	std::vector<int> counter(num);
 	std::vector<int> tmp_arr(num);
-	//int numbers1[num];
-	//int numbers2[num];
-	//int numbers3[num];
-	//int counter[num];
 
 	for(int i=0;i<num;i++)
 	{
